@@ -55,7 +55,8 @@ criticalthinker/
         ├── seed.md             # le sujet tel que fourni par l'éditeur
         ├── v1/
         │   ├── graph.json
-        │   └── reports/        # rapports sourceur, critique, validateur
+        │   ├── sources-cache/  # texte extrait de chaque source (audit hors-ligne)
+        │   └── reports/        # rapports sourceur, juge, critique, validateur
         ├── v2/
         └── ...
 ```
@@ -163,14 +164,23 @@ Graphe orienté avec boucles de rétroaction (pas un arbre : pas d'impasses, des
   "title": "Titre de la page/du document",
   "publisher": "Éditeur ou institution",
   "accessed": "2026-07-18",
+  "language": "en",
   "claim": "L'affirmation précise du résumé que cette source soutient.",
-  "supporting_quote": "La citation exacte, extraite de la source, qui soutient l'affirmation.",
+  "supporting_quote": "Le passage de la source qui soutient l'affirmation — dans la langue de la source, aussi proche du verbatim que possible.",
+  "cache_ref": "sources-cache/SRC_01.txt",
   "confidence": "high | medium",
-  "verified_by": "verifier"
+  "verification": {
+    "verdict": "supported | partial | unsupported",
+    "method": "llm-judge",
+    "rationale": "Une phrase : pourquoi la source soutient (ou non) l'affirmation.",
+    "judged_by": "verifier-judge"
+  }
 }
 ```
 
-Le champ `supporting_quote` est **obligatoire** : il force l'agent vérificateur à lire réellement la source (pas de sourçage de mémoire), et donne à l'éditeur un élément de contrôle ponctuel immédiat.
+- `supporting_quote` est **obligatoire** : il force l'agent sourceur à lire réellement la source (pas de sourçage de mémoire) et donne à l'éditeur un élément de contrôle ponctuel immédiat. Il n'a **pas** à être littéralement présent dans le texte archivé : la source peut être dans une autre langue que l'article, et l'extraction peut reformater le texte. **C'est l'esprit qui doit être respecté**, et c'est le juge sémantique (§6) qui en décide.
+- `cache_ref` pointe vers le texte extrait de la source, archivé dans la version de l'article — la vérification et l'audit G2 restent reproductibles hors-ligne même si la page change ou disparaît.
+- `verification` est le verdict du **juge sémantique indépendant** : `supported` requis pour publier ; `partial` remonte en flag d'arbitrage à G2 ; `unsupported` invalide la source.
 
 ---
 
@@ -200,11 +210,17 @@ Une IA qui relit sa propre production approuve ses propres hallucinations. Le pi
 └────────┬────────┘
          ▼
 ┌─────────────────┐
-│ 3. SOURCEUR /    │  Passe SÉPARÉE. Pour chaque affirmation factuelle :
-│    VÉRIFICATEUR  │  recherche web, ancrage dans une source RÉCUPÉRÉE
-│                  │  (jamais la mémoire du modèle), citation exacte.
-│                  │  Affirmation non ançrable → flag ou réécriture en
-│                  │  interprétatif explicite (déplacée en cardinalité).
+│ 3. SOURCEUR      │  Passe SÉPARÉE. Pour chaque affirmation factuelle :
+│                  │  recherche web, ancrage dans une source RÉCUPÉRÉE
+│                  │  et ARCHIVÉE (jamais la mémoire du modèle), extraction
+│                  │  du passage de soutien. Affirmation non ançrable →
+│                  │  flag ou réécriture en interprétatif explicite.
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 3b. JUGE         │  Passe INDÉPENDANTE, cadrée pour réfuter :
+│     SÉMANTIQUE   │  affirmation + texte archivé → verdict
+│                  │  supported / partial / unsupported (§6).
 └────────┬────────┘
          ▼
 ┌─────────────────┐
@@ -242,9 +258,10 @@ Une IA qui relit sa propre production approuve ses propres hallucinations. Le pi
 
 ## 6. Sourçage (exigence n°1 du projet)
 
-- **Niveau 4 (base empirique) : 100 % sourcé.** Chaque phrase du résumé est couverte par ≥ 1 source avec citation exacte. Sans cela, le nœud est invalide.
+- **Niveau 4 (base empirique) : 100 % sourcé.** Chaque phrase du résumé est couverte par ≥ 1 source avec passage de soutien et verdict `supported`. Sans cela, le nœud est invalide.
 - **Niveau 5 (cardinalités) : interprétatif assumé.** Les axes d'analyse peuvent citer des sources mais n'y sont pas obligés — c'est leur rôle d'être des perspectives. La distinction factuel/interprétatif est **rendue visible au lecteur** (voir §8.4).
-- **Vérification ancrée, jamais de mémoire.** Le sourceur doit récupérer la page et en extraire la citation. Une URL réelle qui ne soutient pas vraiment l'affirmation est le mode d'échec principal : la citation obligatoire + l'audit ciblé de G2 sont les deux mitigations.
+- **Vérification ancrée, jamais de mémoire.** Le sourceur doit récupérer la page (le texte extrait est archivé dans `sources-cache/`) et en tirer le passage de soutien.
+- **L'esprit prime sur la lettre.** Un **juge sémantique indépendant** — passe distincte du sourceur, prompt cadré pour réfuter — reçoit l'affirmation + le texte archivé et rend un verdict `supported` / `partial` / `unsupported`. Ce n'est jamais le rédacteur ni le sourceur qui note sa propre copie. Une URL réelle qui ne soutient pas vraiment l'affirmation est le mode d'échec principal : le juge indépendant + l'audit ciblé de G2 (priorité aux `partial` et aux confiances faibles) sont les deux mitigations.
 - Les sources sont mutualisées au niveau de l'article (tableau `sources`) et référencées par ID depuis les nœuds.
 
 ---
@@ -270,8 +287,9 @@ Règles vérifiées (liste initiale, extensible) :
 
 **Sourçage**
 10. Chaque nœud : `summary.source_ids` non vide ; chaque source référencée existe.
-11. Chaque source : `url`, `supporting_quote`, `claim`, `accessed` non vides.
+11. Chaque source : `url`, `supporting_quote`, `claim`, `accessed`, `cache_ref` non vides ; le fichier pointé par `cache_ref` existe et n'est pas trivialement vide.
 12. Pas de source orpheline (déclarée mais jamais référencée) — avertissement.
+12b. Chaque source porte un `verification.verdict = "supported"` rendu par le juge sémantique (un `partial` bloque la publication tant qu'il n'est pas arbitré à G2 ; un `unsupported` invalide la source). Le validateur vérifie la présence et la valeur du verdict — le jugement sémantique lui-même relève du juge (§6), pas du script.
 
 **Provenance**
 13. `passes.sourced`, `passes.critiqued`, `passes.validated` à `true` ; `critic_flags_open` vide (sinon publication bloquée, arbitrage G2 requis).
