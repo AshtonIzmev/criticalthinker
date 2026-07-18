@@ -1,0 +1,242 @@
+/*
+ * Thème du moteur de lecture (SPEC §8, ARCHITECTURE §7).
+ * Intégration dans le blog hôte par variables CSS — surcharge ces
+ * variables dans ton thème Astro, pas ce fichier.
+ */
+.ct-article {
+  --ct-accent: #4f7cac;
+  --ct-text-link: #2b5b8a;
+  --ct-surface: #ffffff;
+  --ct-surface-alt: #f4f6f8;
+  --ct-border: #d9dee4;
+  --ct-muted: #6b7280;
+  --ct-ok: #2e7d32;
+  --ct-map-width: 240px;
+
+  position: relative;
+  line-height: 1.6;
+}
+
+/* ------------------------------------------------------------------ */
+/* Mots-clés (SPEC §8.2-C)                                            */
+/* ------------------------------------------------------------------ */
+.ct-article a.ct-keyword {
+  color: var(--ct-text-link);
+  text-decoration: none;
+  border-bottom: 2px dashed var(--ct-accent);
+  cursor: pointer;
+}
+.ct-article a.ct-keyword:hover {
+  background: var(--ct-surface-alt);
+}
+.ct-article a.ct-keyword.ct-visited {
+  border-bottom-style: solid;
+  opacity: 0.75;
+}
+
+/* ------------------------------------------------------------------ */
+/* Progression (SPEC §8.2-B)                                          */
+/* ------------------------------------------------------------------ */
+.ct-progress {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--ct-surface);
+  border-bottom: 1px solid var(--ct-border);
+  padding: 0.4rem 0;
+  font-size: 0.85rem;
+  color: var(--ct-muted);
+}
+.ct-enhanced .ct-progress {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ct-progress-track {
+  flex: 1 1 120px;
+  height: 6px;
+  background: var(--ct-surface-alt);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.ct-progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--ct-accent);
+  transition: width 0.3s ease;
+}
+
+/* ------------------------------------------------------------------ */
+/* Nœuds : linéaire sans JS, viewport unique en mode enrichi (§8.1)   */
+/* ------------------------------------------------------------------ */
+.ct-enhanced .ct-node {
+  display: none;
+}
+.ct-enhanced .ct-node.ct-active {
+  display: block;
+}
+.ct-node {
+  background: var(--ct-surface);
+  border: 1px solid var(--ct-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+.ct-node .ct-question {
+  font-style: italic;
+  color: var(--ct-muted);
+  margin-top: 0;
+}
+.ct-summary {
+  font-weight: 500;
+}
+
+/* Sources (SPEC §8.4) : factuel visiblement distinct de l'interprétatif */
+.ct-sources {
+  margin: 0.5rem 0 1rem;
+  font-size: 0.85rem;
+}
+.ct-source {
+  border-left: 3px solid var(--ct-ok);
+  padding-left: 0.6rem;
+  margin: 0.4rem 0;
+}
+.ct-source summary {
+  cursor: pointer;
+  color: var(--ct-muted);
+}
+.ct-source blockquote {
+  margin: 0.4rem 0;
+  color: var(--ct-muted);
+  font-style: italic;
+}
+
+/* Cardinalités = perspectives assumées */
+.ct-cardinality {
+  border: 1px solid var(--ct-border);
+  border-radius: 6px;
+  margin: 0.5rem 0;
+  background: var(--ct-surface-alt);
+}
+.ct-cardinality summary {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+}
+.ct-cardinality > div {
+  padding: 0 0.75rem 0.75rem;
+}
+/* anti-vortex (SPEC §8.3) : chemin déjà miné */
+.ct-enhanced .ct-cardinality.ct-read {
+  opacity: 0.6;
+}
+.ct-enhanced .ct-cardinality.ct-read summary::after {
+  content: " ✓";
+  color: var(--ct-ok);
+}
+
+/* ------------------------------------------------------------------ */
+/* Mini-map (SPEC §8.2-A)                                             */
+/* ------------------------------------------------------------------ */
+.ct-minimap {
+  display: none;
+}
+.ct-enhanced .ct-minimap {
+  display: block;
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--ct-map-width);
+  background: var(--ct-surface);
+  border: 1px solid var(--ct-border);
+  border-radius: 10px;
+  padding: 0.5rem;
+  z-index: 20;
+}
+.ct-minimap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.ct-map-node {
+  fill: var(--ct-border);
+  opacity: 0.5;
+  transition:
+    fill 0.2s,
+    opacity 0.2s;
+}
+.ct-map-node.ct-visited {
+  fill: var(--ct-accent);
+  opacity: 1;
+}
+.ct-map-node.ct-active {
+  fill: var(--ct-accent);
+  opacity: 1;
+  animation: ct-pulse 1.4s ease-in-out infinite;
+}
+.ct-map-edge {
+  stroke: var(--ct-border);
+  stroke-width: 1;
+}
+.ct-map-edge.ct-traversed {
+  stroke: var(--ct-accent);
+  stroke-width: 1.8;
+}
+@keyframes ct-pulse {
+  0%,
+  100% {
+    r: 5;
+  }
+  50% {
+    r: 7;
+  }
+}
+
+/* mobile : bottom-sheet repliable, prévu dès le premier jour (§8.2-A) */
+@media (max-width: 900px) {
+  .ct-enhanced .ct-minimap {
+    position: fixed;
+    right: 0;
+    left: 0;
+    top: auto;
+    bottom: 0;
+    transform: none;
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+    max-height: 45vh;
+    overflow: auto;
+  }
+  .ct-enhanced .ct-minimap:not([open]) {
+    padding: 0;
+  }
+}
+.ct-minimap summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--ct-muted);
+  padding: 0.25rem 0.5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Synthèse (SPEC §8.2-B) : le payoff                                 */
+/* ------------------------------------------------------------------ */
+.ct-synthesis {
+  border: 1px dashed var(--ct-border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 2rem 0;
+}
+.ct-synthesis-gate {
+  color: var(--ct-muted);
+  font-style: italic;
+}
+/* sans JS : la synthèse est simplement visible en fin d'article */
+.ct-article:not(.ct-enhanced) .ct-synthesis-gate {
+  display: none;
+}
+.ct-article:not(.ct-enhanced) .ct-synthesis-content[hidden] {
+  display: block;
+}

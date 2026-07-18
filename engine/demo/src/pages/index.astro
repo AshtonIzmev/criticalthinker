@@ -1,0 +1,28 @@
+---
+import { graphArticleSchema } from '@criticalthinker/schema';
+import GraphArticle from '../../../src/GraphArticle.astro';
+import sample from '../data/sample-graph.json';
+
+const graph = graphArticleSchema.parse(sample);
+---
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{graph.article.title} — démo CriticalThinker</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 2rem 1rem 6rem;
+        color: #222;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>{graph.article.title}</h1>
+    <GraphArticle graph={graph} />
+  </body>
+</html>

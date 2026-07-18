@@ -5,3 +5,4 @@ dist/
 *.tsbuildinfo
 .astro/
 coverage/
+engine/demo/dist/
