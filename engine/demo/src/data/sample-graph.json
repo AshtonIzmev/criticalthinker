@@ -1,0 +1,789 @@
+{
+  "schema_version": "2.0",
+  "article": {
+    "id": "article-de-test",
+    "title": "Article de test",
+    "language": "fr",
+    "graph_version": 1,
+    "created": "2026-07-18",
+    "seed": "Un sujet de test.",
+    "hub": {
+      "text_md": "Introduction du sujet, avec [[entrée 1|PIL_A_N01]] puis [[entrée 2|PIL_B_N01]] puis [[entrée 3|PIL_C_N01]].",
+      "pillars": [
+        {
+          "id": "PIL_A",
+          "label": "Pilier 1"
+        },
+        {
+          "id": "PIL_B",
+          "label": "Pilier 2"
+        },
+        {
+          "id": "PIL_C",
+          "label": "Pilier 3"
+        }
+      ]
+    },
+    "synthesis": {
+      "unlock": {
+        "min_coverage": 0.6,
+        "min_pillar_diversity": 1
+      },
+      "text_md": "La synthèse du gris."
+    }
+  },
+  "nodes": [
+    {
+      "id": "PIL_A_N01",
+      "pillar": "PIL_A",
+      "keyword": "concept-1",
+      "question": "Quelle friction soulève le concept 1 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 1. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_01"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_A_N02]].",
+          "target_node_id": "PIL_A_N02"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_A_N02",
+      "pillar": "PIL_A",
+      "keyword": "concept-2",
+      "question": "Quelle friction soulève le concept 2 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 2. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_02"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_A_N03]].",
+          "target_node_id": "PIL_A_N03"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_A_N03",
+      "pillar": "PIL_A",
+      "keyword": "concept-3",
+      "question": "Quelle friction soulève le concept 3 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 3. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_03"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_A_N04]].",
+          "target_node_id": "PIL_A_N04"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_A_N04",
+      "pillar": "PIL_A",
+      "keyword": "concept-4",
+      "question": "Quelle friction soulève le concept 4 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 4. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_04"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_A_N05]].",
+          "target_node_id": "PIL_A_N05"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_A_N05",
+      "pillar": "PIL_A",
+      "keyword": "concept-5",
+      "question": "Quelle friction soulève le concept 5 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 5. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_05"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_B_N01]].",
+          "target_node_id": "PIL_B_N01"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_B_N01",
+      "pillar": "PIL_B",
+      "keyword": "concept-6",
+      "question": "Quelle friction soulève le concept 6 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 6. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_06"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_B_N02]].",
+          "target_node_id": "PIL_B_N02"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_B_N02",
+      "pillar": "PIL_B",
+      "keyword": "concept-7",
+      "question": "Quelle friction soulève le concept 7 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 7. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_07"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_B_N03]].",
+          "target_node_id": "PIL_B_N03"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_B_N03",
+      "pillar": "PIL_B",
+      "keyword": "concept-8",
+      "question": "Quelle friction soulève le concept 8 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 8. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_08"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_B_N04]].",
+          "target_node_id": "PIL_B_N04"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_B_N04",
+      "pillar": "PIL_B",
+      "keyword": "concept-9",
+      "question": "Quelle friction soulève le concept 9 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 9. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_09"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_B_N05]].",
+          "target_node_id": "PIL_B_N05"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_B_N05",
+      "pillar": "PIL_B",
+      "keyword": "concept-10",
+      "question": "Quelle friction soulève le concept 10 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 10. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_10"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_C_N01]].",
+          "target_node_id": "PIL_C_N01"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_C_N01",
+      "pillar": "PIL_C",
+      "keyword": "concept-11",
+      "question": "Quelle friction soulève le concept 11 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 11. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_11"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_C_N02]].",
+          "target_node_id": "PIL_C_N02"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_C_N02",
+      "pillar": "PIL_C",
+      "keyword": "concept-12",
+      "question": "Quelle friction soulève le concept 12 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 12. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_12"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_C_N03]].",
+          "target_node_id": "PIL_C_N03"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_C_N03",
+      "pillar": "PIL_C",
+      "keyword": "concept-13",
+      "question": "Quelle friction soulève le concept 13 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 13. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_13"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_C_N04]].",
+          "target_node_id": "PIL_C_N04"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_C_N04",
+      "pillar": "PIL_C",
+      "keyword": "concept-14",
+      "question": "Quelle friction soulève le concept 14 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 14. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_14"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_C_N05]].",
+          "target_node_id": "PIL_C_N05"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    },
+    {
+      "id": "PIL_C_N05",
+      "pillar": "PIL_C",
+      "keyword": "concept-15",
+      "question": "Quelle friction soulève le concept 15 ?",
+      "summary": {
+        "text": "Première phrase factuelle du nœud 15. Seconde phrase factuelle sourcée.",
+        "source_ids": ["SRC_15"]
+      },
+      "cardinalities": [
+        {
+          "label": "Axe structurel",
+          "text_md": "Analyse structurelle qui renvoie vers [[le concept suivant|PIL_A_N01]].",
+          "target_node_id": "PIL_A_N01"
+        },
+        {
+          "label": "Axe individuel",
+          "text_md": "Analyse individuelle, feuille terminale.",
+          "target_node_id": null
+        }
+      ],
+      "provenance": {
+        "written_by": "writer",
+        "revisions": 0,
+        "passes": {
+          "sourced": true,
+          "critiqued": true,
+          "validated": true
+        },
+        "critic_flags_open": []
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "SRC_01",
+      "url": "https://example.org/source-1",
+      "title": "Source 1",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 1.",
+      "supporting_quote": "Passage soutenant l'affirmation 1.",
+      "cache_ref": "sources-cache/SRC_01.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_02",
+      "url": "https://example.org/source-2",
+      "title": "Source 2",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 2.",
+      "supporting_quote": "Passage soutenant l'affirmation 2.",
+      "cache_ref": "sources-cache/SRC_02.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_03",
+      "url": "https://example.org/source-3",
+      "title": "Source 3",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 3.",
+      "supporting_quote": "Passage soutenant l'affirmation 3.",
+      "cache_ref": "sources-cache/SRC_03.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_04",
+      "url": "https://example.org/source-4",
+      "title": "Source 4",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 4.",
+      "supporting_quote": "Passage soutenant l'affirmation 4.",
+      "cache_ref": "sources-cache/SRC_04.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_05",
+      "url": "https://example.org/source-5",
+      "title": "Source 5",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 5.",
+      "supporting_quote": "Passage soutenant l'affirmation 5.",
+      "cache_ref": "sources-cache/SRC_05.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_06",
+      "url": "https://example.org/source-6",
+      "title": "Source 6",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 6.",
+      "supporting_quote": "Passage soutenant l'affirmation 6.",
+      "cache_ref": "sources-cache/SRC_06.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_07",
+      "url": "https://example.org/source-7",
+      "title": "Source 7",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 7.",
+      "supporting_quote": "Passage soutenant l'affirmation 7.",
+      "cache_ref": "sources-cache/SRC_07.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_08",
+      "url": "https://example.org/source-8",
+      "title": "Source 8",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 8.",
+      "supporting_quote": "Passage soutenant l'affirmation 8.",
+      "cache_ref": "sources-cache/SRC_08.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_09",
+      "url": "https://example.org/source-9",
+      "title": "Source 9",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 9.",
+      "supporting_quote": "Passage soutenant l'affirmation 9.",
+      "cache_ref": "sources-cache/SRC_09.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_10",
+      "url": "https://example.org/source-10",
+      "title": "Source 10",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 10.",
+      "supporting_quote": "Passage soutenant l'affirmation 10.",
+      "cache_ref": "sources-cache/SRC_10.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_11",
+      "url": "https://example.org/source-11",
+      "title": "Source 11",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 11.",
+      "supporting_quote": "Passage soutenant l'affirmation 11.",
+      "cache_ref": "sources-cache/SRC_11.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_12",
+      "url": "https://example.org/source-12",
+      "title": "Source 12",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 12.",
+      "supporting_quote": "Passage soutenant l'affirmation 12.",
+      "cache_ref": "sources-cache/SRC_12.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_13",
+      "url": "https://example.org/source-13",
+      "title": "Source 13",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 13.",
+      "supporting_quote": "Passage soutenant l'affirmation 13.",
+      "cache_ref": "sources-cache/SRC_13.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_14",
+      "url": "https://example.org/source-14",
+      "title": "Source 14",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 14.",
+      "supporting_quote": "Passage soutenant l'affirmation 14.",
+      "cache_ref": "sources-cache/SRC_14.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    },
+    {
+      "id": "SRC_15",
+      "url": "https://example.org/source-15",
+      "title": "Source 15",
+      "publisher": "Example Press",
+      "accessed": "2026-07-18",
+      "language": "en",
+      "claim": "Affirmation factuelle du nœud 15.",
+      "supporting_quote": "Passage soutenant l'affirmation 15.",
+      "cache_ref": "sources-cache/SRC_15.txt",
+      "confidence": "high",
+      "verification": {
+        "verdict": "supported",
+        "method": "llm-judge",
+        "rationale": "Le passage soutient directement l’affirmation.",
+        "judged_by": "verifier-judge"
+      }
+    }
+  ]
+}

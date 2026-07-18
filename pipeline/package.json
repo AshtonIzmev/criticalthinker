@@ -1,0 +1,32 @@
+{
+  "name": "@criticalthinker/pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "ct": "./src/cli.ts"
+  },
+  "scripts": {
+    "ct": "tsx src/cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@azure/ai-agents": "^1.0.0",
+    "@azure/identity": "^4.5.0",
+    "@criticalthinker/schema": "workspace:*",
+    "@mozilla/readability": "^0.6.0",
+    "commander": "^14.0.0",
+    "dotenv": "^17.0.0",
+    "jsdom": "^26.0.0",
+    "openai": "^5.0.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^26.1.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}

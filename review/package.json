@@ -1,0 +1,25 @@
+{
+  "name": "@criticalthinker/review",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "ctr": "./src/cli.ts"
+  },
+  "scripts": {
+    "ctr": "tsx src/cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@criticalthinker/schema": "workspace:*",
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "playwright-core": "^1.61.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.0"
+  }
+}

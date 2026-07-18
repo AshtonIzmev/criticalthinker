@@ -1,0 +1,134 @@
+---
+import type { GraphArticle } from '@criticalthinker/schema';
+import { computeLayout } from '@criticalthinker/schema';
+import { renderParagraphs, renderRichText } from './render.js';
+import './styles.css';
+
+/**
+ * Moteur de lecture (SPEC §8, ARCHITECTURE §7).
+ * Tout le contenu est rendu ici, au build, en HTML statique : sans JS
+ * l'article se lit linéairement (hub puis nœuds par pilier) et reste
+ * indexable. L'island (script ci-dessous) n'ajoute que l'orchestration.
+ */
+
+interface Props {
+  graph: GraphArticle;
+}
+
+const { graph } = Astro.props;
+const { article, nodes, sources } = graph;
+
+const layout = computeLayout(graph, { size: 260, innerRadius: 62, ringGap: 38, maxPerRing: 5 });
+const sourcesById = new Map(sources.map((source) => [source.id, source]));
+const nodesByPillarId = new Map(
+  article.hub.pillars.map((pillar) => [
+    pillar.id,
+    nodes.filter((node) => node.pillar === pillar.id),
+  ]),
+);
+const totalCardinalities = nodes.reduce((sum, node) => sum + node.cardinalities.length, 0);
+const pillarOf = Object.fromEntries(nodes.map((node) => [node.id, node.pillar]));
+---
+
+<div
+  class="ct-article"
+  data-article-id={article.id}
+  data-total-cardinalities={String(totalCardinalities)}
+  data-total-pillars={String(article.hub.pillars.length)}
+  data-pillar-of={JSON.stringify(pillarOf)}
+  data-min-coverage={String(article.synthesis.unlock.min_coverage)}
+  data-min-diversity={String(article.synthesis.unlock.min_pillar_diversity)}
+>
+  <header class="ct-progress" aria-live="polite">
+    <span>Exploration&nbsp;: <strong class="ct-metric-coverage">0&nbsp;%</strong></span>
+    <span>Piliers&nbsp;: <strong class="ct-metric-diversity">0</strong></span>
+    <span>Perspectives croisées&nbsp;: <strong class="ct-metric-contradiction">0</strong></span>
+    <span class="ct-progress-track"><span class="ct-progress-bar"></span></span>
+  </header>
+
+  <section class="ct-hub">
+    <Fragment set:html={renderParagraphs(article.hub.text_md)} />
+  </section>
+
+  <div class="ct-viewport">
+    {
+      article.hub.pillars.map((pillar) => (
+        <section class="ct-pillar" data-pillar={pillar.id}>
+          <h2 class="ct-pillar-title">{pillar.label}</h2>
+          {(nodesByPillarId.get(pillar.id) ?? []).map((node) => (
+            <article class="ct-node" id={node.id} aria-label={node.keyword}>
+              <p class="ct-question">{node.question}</p>
+              <p class="ct-summary">{node.summary.text}</p>
+              <div class="ct-sources">
+                {node.summary.source_ids.map((sourceId) => {
+                  const source = sourcesById.get(sourceId);
+                  return source === undefined ? null : (
+                    <details class="ct-source">
+                      <summary>
+                        Source&nbsp;: {source.title} — {source.publisher}
+                      </summary>
+                      <blockquote>«&nbsp;{source.supporting_quote}&nbsp;»</blockquote>
+                      <a href={source.url} rel="noopener">
+                        {source.url}
+                      </a>
+                    </details>
+                  );
+                })}
+              </div>
+              {node.cardinalities.map((cardinality) => (
+                <details class="ct-cardinality">
+                  <summary>{cardinality.label}</summary>
+                  <div>
+                    <Fragment set:html={renderRichText(cardinality.text_md)} />
+                  </div>
+                </details>
+              ))}
+            </article>
+          ))}
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="ct-synthesis">
+    <p class="ct-synthesis-gate">
+      La synthèse se déverrouille quand tu auras exploré assez de perspectives — et tous les
+      piliers.
+    </p>
+    <div class="ct-synthesis-content" hidden>
+      <h2>Synthèse</h2>
+      <Fragment set:html={renderParagraphs(article.synthesis.text_md)} />
+    </div>
+  </section>
+
+  <details class="ct-minimap" open>
+    <summary>Carte de l'article</summary>
+    <svg
+      viewBox={`0 0 ${layout.width} ${layout.height}`}
+      role="img"
+      aria-label={`Carte du graphe : ${nodes.length} nœuds`}
+    >
+      {layout.edges.map((edge) => (
+        <line
+          class="ct-map-edge"
+          data-from={edge.from ?? 'hub'}
+          data-to={edge.to}
+          x1={edge.x1}
+          y1={edge.y1}
+          x2={edge.x2}
+          y2={edge.y2}
+        />
+      ))}
+      <circle cx={layout.hub.x} cy={layout.hub.y} r="7" fill="currentColor" opacity="0.6" />
+      {layout.nodes.map((point) => (
+        <circle class="ct-map-node" data-node={point.id} cx={point.x} cy={point.y} r="5">
+          <title>{point.id}</title>
+        </circle>
+      ))}
+    </svg>
+  </details>
+</div>
+
+<script>
+  import './island.js';
+</script>
