@@ -42,8 +42,8 @@ describe('generateReviewSheet (G2)', () => {
     const html = generateReviewSheet(graph);
     expect(html).toContain('Porte G2');
     expect(html).toContain('[supported]');
-    expect(html).toContain('✓ sourcé');
-    expect(html).toContain('aucun</span>'); // pas de flags ouverts
+    expect(html).toContain('>sourcé</span>');
+    expect(html).not.toContain('class="flag"'); // pas de flags ouverts
   });
 
   it('trie les nœuds à arbitrer en tête', () => {

@@ -1,5 +1,17 @@
 import { computeLayout, type Finding, type GraphArticle } from '@criticalthinker/schema';
-import { escapeHtml, type NodeStatus, pageTemplate, pillarColor, renderGraphSvg } from './html.js';
+import {
+  escapeHtml,
+  fittedLayoutOptions,
+  maxNodesPerPillar,
+  type NodeStatus,
+  pageTemplate,
+  pillarLegend,
+  renderGraphSvg,
+  renderTiles,
+  type StatusKind,
+  statusChip,
+  type Tile,
+} from './html.js';
 
 /**
  * Fiche G2 (SPEC §9.2) : feux tricolores par nœud, objections survivantes,
@@ -10,7 +22,7 @@ import { escapeHtml, type NodeStatus, pageTemplate, pillarColor, renderGraphSvg 
 export function generateReviewSheet(graph: GraphArticle, findings: Finding[] = []): string {
   const pillarIds = graph.article.hub.pillars.map((pillar) => pillar.id);
   const sourcesById = new Map(graph.sources.map((source) => [source.id, source]));
-  const layout = computeLayout(graph);
+  const layout = computeLayout(graph, fittedLayoutOptions(maxNodesPerPillar(graph.nodes)));
 
   const auditPriority = (nodeId: string): number => {
     const node = graph.nodes.find((n) => n.id === nodeId);
@@ -26,16 +38,16 @@ export function generateReviewSheet(graph: GraphArticle, findings: Finding[] = [
     return score;
   };
 
+  const statusOf = (nodeId: string): StatusKind => {
+    const score = auditPriority(nodeId);
+    return score >= 8 ? 'critical' : score > 0 ? 'warning' : 'good';
+  };
+
   const statuses = new Map<string, NodeStatus>(
     graph.nodes.map((node) => {
-      const score = auditPriority(node.id);
-      const status: NodeStatus =
-        score >= 8
-          ? { fill: '#c62828', badge: '⚠' }
-          : score > 0
-            ? { fill: '#b26a00', badge: '•' }
-            : { fill: '#2e7d32', badge: '✓' };
-      return [node.id, status];
+      const status = statusOf(node.id);
+      const badge = status === 'critical' ? '⚠' : status === 'warning' ? '!' : undefined;
+      return [node.id, badge !== undefined ? { status, badge } : { status }];
     }),
   );
 
@@ -45,53 +57,64 @@ export function generateReviewSheet(graph: GraphArticle, findings: Finding[] = [
     .map((node) => {
       const { passes } = node.provenance;
       const lights = [
-        passes.sourced ? '<span class="ok">✓ sourcé</span>' : '<span class="bad">✗ sourçage</span>',
-        passes.critiqued
-          ? '<span class="ok">✓ critiqué</span>'
-          : '<span class="warn">… critique</span>',
+        statusChip(
+          passes.sourced ? 'good' : 'critical',
+          passes.sourced ? 'sourcé' : 'sourçage incomplet',
+        ),
+        statusChip(
+          passes.critiqued ? 'good' : 'warning',
+          passes.critiqued ? 'critiqué' : 'critique en attente',
+        ),
         node.provenance.revisions > 0
-          ? `<span class="warn">↻ ${node.provenance.revisions} révision(s)</span>`
-          : '<span class="muted">—</span>',
-      ].join('<br>');
+          ? statusChip('warning', `révisé ×${node.provenance.revisions}`)
+          : '',
+      ]
+        .filter((chip) => chip !== '')
+        .join('');
 
       const sources = node.summary.source_ids
         .map((sourceId) => {
           const source = sourcesById.get(sourceId);
-          if (source === undefined) return `<span class="bad">${sourceId} manquante</span>`;
-          const verdictClass =
-            source.verification.verdict === 'supported'
-              ? 'ok'
-              : source.verification.verdict === 'partial'
-                ? 'warn'
-                : 'bad';
-          return `<a href="${escapeHtml(source.url)}">${escapeHtml(source.title)}</a>
-            <span class="${verdictClass}">[${source.verification.verdict}]</span>
-            <span class="muted">(${source.confidence})</span><br>
-            <span class="muted">« ${escapeHtml(source.supporting_quote)} »</span>`;
+          if (source === undefined) return `${statusChip('critical', `${sourceId} manquante`)}`;
+          return `<div>
+            <a href="${escapeHtml(source.url)}">${escapeHtml(source.title)}</a>
+            <span class="muted">· ${escapeHtml(source.publisher)}</span><br>
+            <span class="verdict verdict-${source.verification.verdict}">[${source.verification.verdict}]</span>
+            <span class="muted">confiance ${source.confidence}</span>
+            <blockquote class="quote">«&nbsp;${escapeHtml(source.supporting_quote)}&nbsp;»</blockquote>
+          </div>`;
         })
-        .join('<hr style="border:none;border-top:1px solid #eee">');
+        .join('');
 
       const flags = node.provenance.critic_flags_open
         .map((flag) => `<div class="flag">${escapeHtml(flag)}</div>`)
         .join('');
 
       return `<tr>
-        <td><code>${node.id}</code><br><strong>${escapeHtml(node.keyword)}</strong></td>
-        <td>${lights}</td>
-        <td>${escapeHtml(node.summary.text)}</td>
-        <td>${sources !== '' ? sources : '<span class="bad">aucune source</span>'}</td>
-        <td>${flags !== '' ? flags : '<span class="muted">aucun</span>'}</td>
+        <td>
+          <div class="status-lines">
+            ${statusChip(statusOf(node.id))}
+            <span><code>${node.id}</code></span>
+            <span class="keyword">${escapeHtml(node.keyword)}</span>
+          </div>
+        </td>
+        <td><div class="status-lines">${lights}</div></td>
+        <td>${escapeHtml(node.summary.text)}
+          ${flags !== '' ? flags : ''}
+        </td>
+        <td>${sources !== '' ? sources : statusChip('critical', 'aucune source')}</td>
       </tr>`;
     })
     .join('\n');
 
+  const errorCount = findings.filter((finding) => finding.severity === 'error').length;
   const validationSection =
     findings.length === 0
-      ? '<p class="ok">Validation mécanique : aucune erreur.</p>'
-      : `<ul>${findings
+      ? '<p class="ok-note">✓ Validation mécanique : aucune erreur.</p>'
+      : `<ul class="findings">${findings
           .map(
             (finding) =>
-              `<li class="${finding.severity === 'error' ? 'bad' : 'warn'}">[${finding.rule}] <code>${escapeHtml(finding.where ?? '')}</code> ${escapeHtml(finding.message)}</li>`,
+              `<li>${statusChip(finding.severity === 'error' ? 'critical' : 'warning', finding.rule)} <code>${escapeHtml(finding.where ?? '')}</code> ${escapeHtml(finding.message)}</li>`,
           )
           .join('\n')}</ul>`;
 
@@ -103,37 +126,62 @@ export function generateReviewSheet(graph: GraphArticle, findings: Finding[] = [
     0,
   );
 
-  const body = `
-<h1>Porte G2 — Fiche de revue : ${escapeHtml(graph.article.title)}</h1>
-<p class="muted">${graph.nodes.length} nœuds · ${graph.sources.length} sources · ${partialCount} verdict(s) « partial » à arbitrer · ${openFlags} flag(s) ouvert(s).
-Les nœuds sont triés par priorité d'audit — commence par le haut.</p>
+  const tiles: Tile[] = [
+    { value: String(graph.nodes.length), label: 'nœuds' },
+    { value: String(graph.sources.length), label: 'sources' },
+    {
+      value: String(partialCount),
+      label: 'verdicts « partial »',
+      ...(partialCount > 0 ? { status: 'warning' as const } : {}),
+    },
+    {
+      value: String(openFlags),
+      label: 'flags ouverts',
+      ...(openFlags > 0 ? { status: 'critical' as const } : {}),
+    },
+    {
+      value: String(errorCount),
+      label: 'erreurs de validation',
+      status: errorCount > 0 ? ('critical' as const) : ('good' as const),
+    },
+  ];
 
-<h2>Graphe</h2>
+  const body = `
+<h1>Fiche de revue — ${escapeHtml(graph.article.title)}</h1>
+<p class="lede">Tu n'as pas à relire la prose : audite l'auditeur. Les nœuds sont triés par priorité
+d'audit — commence par le haut, les verdicts «&nbsp;partial&nbsp;» et les flags d'abord.</p>
+
+${renderTiles(tiles)}
+
+<h2>Graphe — statut éditorial</h2>
 <div class="legend">
-  <span><span class="dot" style="background:#2e7d32"></span>rien à signaler</span>
-  <span><span class="dot" style="background:#b26a00"></span>à regarder</span>
-  <span><span class="dot" style="background:#c62828"></span>arbitrage requis</span>
+  <span class="legend-item">${statusChip('good')}</span>
+  <span class="legend-item">${statusChip('warning')}</span>
+  <span class="legend-item">${statusChip('critical')}</span>
 </div>
-<div class="graph">${renderGraphSvg(
+<div class="card graph">${renderGraphSvg(
     layout,
     pillarIds,
     (nodeId) => graph.nodes.find((n) => n.id === nodeId)?.pillar ?? pillarIds[0] ?? '',
     statuses,
   )}</div>
+${pillarLegend(graph.article.hub.pillars)}
 
 <h2>Validation mécanique</h2>
-${validationSection}
+<div class="card">${validationSection}</div>
 
-<h2>Nœuds (par priorité d'audit)</h2>
+<h2>Nœuds — par priorité d'audit</h2>
+<div class="tablewrap">
 <table>
-  <thead><tr><th>Nœud</th><th>Statut</th><th>Base empirique</th><th>Sources &amp; verdicts</th><th>Flags ouverts</th></tr></thead>
+  <thead><tr><th style="width:16%">Nœud</th><th style="width:16%">Passes</th><th style="width:34%">Base empirique &amp; flags</th><th>Sources &amp; verdicts</th></tr></thead>
   <tbody>
 ${rows}
   </tbody>
 </table>
+</div>
 
 <h2>Synthèse</h2>
-<p>${escapeHtml(graph.article.synthesis.text_md)}</p>`;
+<div class="card"><p style="margin:0">${escapeHtml(graph.article.synthesis.text_md)}</p></div>`;
 
-  return pageTemplate(`G2 — ${graph.article.title}`, body);
+  return pageTemplate(`G2 — ${graph.article.title}`, 'Porte G2 · fiche de revue', body);
 }
